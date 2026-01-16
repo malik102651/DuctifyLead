@@ -61,12 +61,15 @@ function Navbar() {
     { label: 'Contact Us', path: '/contact' },
   ]
 
+  const isHomePage = location.pathname === '/'
+  const isTransparent = isHomePage && !isScrolled
+
   return (
     <>
       <ElevationScroll>
         <AppBar position="fixed" sx={{ 
-          backgroundColor: location.pathname === '/' && !isScrolled ? 'transparent' : 'rgba(255, 255, 255, 0.98)',
-          boxShadow: location.pathname === '/' && !isScrolled ? 'none' : 1,
+          backgroundColor: isTransparent ? 'transparent' : 'rgba(255, 255, 255, 0.98)',
+          boxShadow: isTransparent ? 'none' : 1,
           transition: 'all 0.3s ease-in-out',
         }}>
           <Container maxWidth="xl" sx={{ px: { xs: 3, md: 6 } }}>
@@ -78,7 +81,7 @@ function Navbar() {
                 sx={{
                   flexGrow: { xs: 1, md: 0 },
                   fontWeight: 700,
-                  color: location.pathname === '/' && !isScrolled ? 'white' : 'primary.main',
+                  color: isTransparent ? 'white' : 'primary.main',
                   fontFamily: "'Poppins', sans-serif",
                   textDecoration: 'none',
                   transition: 'color 0.3s ease-in-out',
@@ -94,8 +97,8 @@ function Navbar() {
                     to={item.path}
                     sx={{
                       color: location.pathname === item.path 
-                        ? location.pathname === '/' && !isScrolled ? 'white' : 'primary.main'
-                        : location.pathname === '/' && !isScrolled ? 'white' : 'text.primary',
+                        ? isTransparent ? 'white' : 'primary.main'
+                        : isTransparent ? 'white' : 'text.primary',
                       fontWeight: location.pathname === item.path ? 600 : 500,
                       '&:hover': {
                         color: 'primary.main',
@@ -132,7 +135,7 @@ function Navbar() {
                 onClick={handleDrawerToggle}
                 sx={{ 
                   display: { md: 'none' }, 
-                  color: location.pathname === '/' && !isScrolled ? 'white' : 'text.primary', 
+                  color: isTransparent ? 'white' : 'text.primary', 
                   transition: 'color 0.3s ease-in-out' 
                 }}
               >

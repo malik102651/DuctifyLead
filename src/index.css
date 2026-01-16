@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #1a2332;
+  background-color: #f5f7fa;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0066cc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #004499;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Selection color */
+::selection {
+  background-color: #0066cc;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: #0066cc;
+  color: white;
+}
+
+/* Custom button styles */
+button {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Link styles */
+a {
+  transition: all 0.3s ease;
+}
+
+/* Form inputs */
+input,
+textarea,
+select {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+
+/* Card shadows */
+.MuiCard-root {
+  transition: all 0.3s ease;
+}
+
+/* Responsive spacing */
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+}
+

@@ -9,6 +9,7 @@ import Services from './pages/Services'
 import Pricing from './pages/Pricing'
 import PlanDetails from './pages/PlanDetails'
 import Contact from './pages/Contact'
+import FAQ from './pages/FAQ'
 
 const theme = createTheme({
   palette: {
@@ -79,6 +80,7 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/plan-details/:planName" element={<PlanDetails />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
         </Routes>
         <Footer />
       </Router>

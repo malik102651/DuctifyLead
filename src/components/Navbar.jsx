@@ -58,6 +58,7 @@ function Navbar() {
     { label: 'About', path: '/about' },
     { label: 'Services', path: '/services' },
     { label: 'Pricing', path: '/pricing' },
+    { label: 'FAQ', path: '/faq' },
     { label: 'Contact Us', path: '/contact' },
   ]
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Box,
   Container,
@@ -18,7 +18,10 @@ import { CheckCircle, Close, ArrowBack } from '@mui/icons-material'
 function PlanDetails() {
   const { planName } = useParams()
   const navigate = useNavigate()
-  const [billingPeriod, setBillingPeriod] = useState('monthly')
+  const [searchParams] = useSearchParams()
+  const [billingPeriod, setBillingPeriod] = useState(searchParams.get('period') || 'monthly')
+  const savingsAmount = parseInt(searchParams.get('savings')) || 0
+  const selectedPrice = parseInt(searchParams.get('price')) || 0
 
   const plansData = {
     basic: {
@@ -183,57 +186,27 @@ function PlanDetails() {
                       mb: 3,
                     }}
                   >
-                    Choose Billing Period
+                    Your Selected Plan
                   </Typography>
 
-                  <FormControl fullWidth sx={{ mb: 4 }}>
-                    <Select
-                      value={billingPeriod}
-                      onChange={(e) => setBillingPeriod(e.target.value)}
-                      sx={{
-                        borderRadius: 2,
-                        '& .MuiOutlinedInput-root': {
-                          fontSize: '1rem',
-                          fontWeight: 500,
-                        },
-                      }}
-                    >
-                      <MenuItem value="monthly">
-                        <Box>
-                          <Typography sx={{ fontWeight: 600 }}>Monthly</Typography>
-                          <Typography sx={{ fontSize: '0.85rem', color: '#5a6b7d' }}>
-                            ${plan.monthlyPrice}/month
-                          </Typography>
-                        </Box>
-                      </MenuItem>
-                      <MenuItem value="sixMonth">
-                        <Box>
-                          <Typography sx={{ fontWeight: 600 }}>
-                            6 Months
-                            <span style={{ color: '#10b981', marginLeft: '8px' }}>
-                              (Save {plan.sixMonthSavings})
-                            </span>
-                          </Typography>
-                          <Typography sx={{ fontSize: '0.85rem', color: '#5a6b7d' }}>
-                            ${plan.sixMonthPrice} total (~${Math.round(plan.sixMonthPrice / 6)}/month)
-                          </Typography>
-                        </Box>
-                      </MenuItem>
-                      <MenuItem value="annual">
-                        <Box>
-                          <Typography sx={{ fontWeight: 600 }}>
-                            Annual
-                            <span style={{ color: '#10b981', marginLeft: '8px' }}>
-                              (Save {plan.annualSavings})
-                            </span>
-                          </Typography>
-                          <Typography sx={{ fontSize: '0.85rem', color: '#5a6b7d' }}>
-                            ${plan.annualPrice} total (~${Math.round(plan.annualPrice / 12)}/month)
-                          </Typography>
-                        </Box>
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
+                  <Box sx={{ mb: 4, p: 3, backgroundColor: '#f0f4ff', borderRadius: 2, border: '2px solid #0066cc' }}>
+                    <Typography sx={{ fontSize: '0.9rem', color: '#5a6b7d', mb: 1 }}>
+                      Billing Period: <strong>{billingPeriod === 'monthly' ? 'Monthly' : billingPeriod === 'sixMonth' ? '6 Months' : 'Annual'}</strong>
+                    </Typography>
+                    <Typography sx={{ fontSize: '2rem', fontWeight: 800, color: '#0066cc', mb: 1 }}>
+                      ${selectedPrice}
+                    </Typography>
+                    {savingsAmount > 0 && (
+                      <Typography sx={{ fontSize: '0.85rem', color: '#10b981', fontWeight: 600 }}>
+                        You save ${savingsAmount} on this plan
+                      </Typography>
+                    )}
+                    {savingsAmount === 0 && (
+                      <Typography sx={{ fontSize: '0.85rem', color: '#10b981', fontWeight: 600 }}>
+                        No commitment required
+                      </Typography>
+                    )}
+                  </Box>
 
                   {/* Additional Info */}
                   <Box sx={{ backgroundColor: '#f0f4ff', borderRadius: 2, p: 3, mb: 3 }}>

@@ -25,12 +25,15 @@ import Zap from '@mui/icons-material/Bolt'
 
 function Pricing() {
   const navigate = useNavigate()
+  const [billingPeriod, setBillingPeriod] = useState('monthly')
   const plans = [
     {
       name: 'Basic',
       monthlyPrice: 299,
       sixMonthPrice: 1600,
       sixMonthSavings: '12%',
+      annualPrice: 2978,
+      annualSavings: '17%',
       features: {
         'No. of Leads': { monthly: '2-3', period: '12-15' },
         'Referral Fee': { monthly: '25%', period: '25%' },
@@ -51,6 +54,8 @@ function Pricing() {
       monthlyPrice: 499,
       sixMonthPrice: 2600,
       sixMonthSavings: '14%',
+      annualPrice: 4970,
+      annualSavings: '17%',
       features: {
         'No. of Leads': { monthly: '3-5', period: '18-30' },
         'Referral Fee': { monthly: '20%', period: '20%' },
@@ -69,7 +74,9 @@ function Pricing() {
     {
       name: 'Premium',
       monthlyPrice: 899,
-      annualPrice: 9000,
+      sixMonthPrice: 4747,
+      sixMonthSavings: '12%',
+      annualPrice: 7470,
       annualSavings: '17%',
       features: {
         'No. of Leads': { monthly: '5-8', period: '60-90' },
@@ -100,6 +107,22 @@ function Pricing() {
     'Agent Profile',
     'CRM',
   ]
+
+  const calculateSavingsAmount = (plan) => {
+    if (billingPeriod === 'monthly') {
+      return 0
+    } else if (billingPeriod === 'sixmonth') {
+      const savingsPercent = parseFloat(plan.sixMonthSavings) / 100
+      const originalPrice = plan.sixMonthPrice / (1 - savingsPercent)
+      return Math.round(originalPrice - plan.sixMonthPrice)
+    } else if (billingPeriod === 'annual') {
+      const savingsPercent = parseFloat(plan.annualSavings) / 100
+      if (savingsPercent === 0) return 0
+      const originalPrice = plan.annualPrice / (1 - savingsPercent)
+      return Math.round(originalPrice - plan.annualPrice)
+    }
+    return 0
+  }
 
   return (
     <Box sx={{ pt: 10 }}>
@@ -262,10 +285,99 @@ function Pricing() {
                 color: '#5a6b7d',
                 maxWidth: '700px',
                 mx: 'auto',
+                mb: 6,
               }}
             >
               Each plan is designed to support different stages of business growth
             </Typography>
+
+            {/* Billing Period Selector */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 6, flexWrap: 'wrap' }}>
+              <Button
+                variant={billingPeriod === 'monthly' ? 'contained' : 'outlined'}
+                onClick={() => setBillingPeriod('monthly')}
+                sx={{
+                  backgroundColor: billingPeriod === 'monthly' ? '#0066cc' : 'transparent',
+                  color: billingPeriod === 'monthly' ? 'white' : '#0066cc',
+                  borderColor: '#0066cc',
+                  px: 4,
+                  py: 1.2,
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontSize: '0.95rem',
+                  '&:hover': {
+                    backgroundColor: billingPeriod === 'monthly' ? '#004499' : 'rgba(0, 102, 204, 0.08)',
+                  },
+                }}
+              >
+                Monthly
+              </Button>
+              <Button
+                variant={billingPeriod === 'sixmonth' ? 'contained' : 'outlined'}
+                onClick={() => setBillingPeriod('sixmonth')}
+                sx={{
+                  backgroundColor: billingPeriod === 'sixmonth' ? '#0066cc' : 'transparent',
+                  color: billingPeriod === 'sixmonth' ? 'white' : '#0066cc',
+                  borderColor: '#0066cc',
+                  px: 4,
+                  py: 1.2,
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontSize: '0.95rem',
+                  '&:hover': {
+                    backgroundColor: billingPeriod === 'sixmonth' ? '#004499' : 'rgba(0, 102, 204, 0.08)',
+                  },
+                }}
+              >
+                6 Months
+                <Chip
+                  label="Save 12%"
+                  size="small"
+                  sx={{
+                    ml: 1.5,
+                    backgroundColor: '#10b981',
+                    color: 'white',
+                    height: 22,
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                  }}
+                />
+              </Button>
+              <Button
+                variant={billingPeriod === 'annual' ? 'contained' : 'outlined'}
+                onClick={() => setBillingPeriod('annual')}
+                sx={{
+                  backgroundColor: billingPeriod === 'annual' ? '#0066cc' : 'transparent',
+                  color: billingPeriod === 'annual' ? 'white' : '#0066cc',
+                  borderColor: '#0066cc',
+                  px: 4,
+                  py: 1.2,
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontSize: '0.95rem',
+                  '&:hover': {
+                    backgroundColor: billingPeriod === 'annual' ? '#004499' : 'rgba(0, 102, 204, 0.08)',
+                  },
+                }}
+              >
+                Yearly
+                <Chip
+                  label="Save 17%"
+                  size="small"
+                  sx={{
+                    ml: 1.5,
+                    backgroundColor: '#10b981',
+                    color: 'white',
+                    height: 22,
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                  }}
+                />
+              </Button>
+            </Box>
           </Box>
 
           <Grid container spacing={4} sx={{ mb: 8 }}>
@@ -336,52 +448,35 @@ function Pricing() {
 
                     {/* Pricing Table Header */}
                     <Box sx={{ p: 2, backgroundColor: '#f5f7fa', borderBottom: '1px solid #e0e7ff' }}>
-                      <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                          <Box sx={{ textAlign: 'center' }}>
-                            <Typography sx={{ fontSize: '0.7rem', color: '#5a6b7d', fontWeight: 700 }}>
-                              Monthly
-                            </Typography>
-                            <Typography
-                              sx={{
-                                fontSize: '1.1rem',
-                                fontWeight: 800,
-                                color: '#1a2332',
-                                mt: 0.5,
-                              }}
-                            >
-                              ${plan.monthlyPrice}
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Box sx={{ textAlign: 'center', borderLeft: '1px solid #e0e7ff' }}>
-                            <Typography sx={{ fontSize: '0.7rem', color: '#5a6b7d', fontWeight: 700 }}>
-                              {plan.annualPrice ? 'Annually' : '6 Months'}
-                            </Typography>
-                            <Typography
-                              sx={{
-                                fontSize: '1rem',
-                                fontWeight: 800,
-                                color: '#1a2332',
-                                mt: 0.5,
-                              }}
-                            >
-                              ${plan.annualPrice || plan.sixMonthPrice}
-                            </Typography>
-                            <Typography
-                              sx={{
-                                fontSize: '0.65rem',
-                                color: '#10b981',
-                                fontWeight: 700,
-                                mt: 0.3,
-                              }}
-                            >
-                              save {plan.annualSavings || plan.sixMonthSavings}
-                            </Typography>
-                          </Box>
-                        </Grid>
-                      </Grid>
+                      <Box sx={{ textAlign: 'center' }}>
+                        <Typography sx={{ fontSize: '0.7rem', color: '#5a6b7d', fontWeight: 700 }}>
+                          {billingPeriod === 'monthly'
+                            ? 'Monthly Price'
+                            : billingPeriod === 'sixmonth'
+                            ? '6-Month Price'
+                            : 'Yearly Price'}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontSize: '1.5rem',
+                            fontWeight: 800,
+                            color: '#1a2332',
+                            mt: 0.5,
+                          }}
+                        >
+                          $
+                          {billingPeriod === 'monthly'
+                            ? plan.monthlyPrice
+                            : billingPeriod === 'sixmonth'
+                            ? plan.sixMonthPrice || plan.monthlyPrice * 6
+                            : plan.annualPrice || plan.monthlyPrice * 12}
+                        </Typography>
+                        {calculateSavingsAmount(plan) > 0 && (
+                          <Typography sx={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 700, mt: 0.5 }}>
+                            Save ${calculateSavingsAmount(plan)}
+                          </Typography>
+                        )}
+                      </Box>
                     </Box>
 
                     {/* CTA Button */}
@@ -389,7 +484,14 @@ function Pricing() {
                       <Button
                         variant={plan.highlighted ? 'contained' : 'outlined'}
                         fullWidth
-                        onClick={() => navigate(`/plan-details/${plan.name.toLowerCase()}`)}
+                        onClick={() => {
+                          const price = billingPeriod === 'monthly'
+                            ? plan.monthlyPrice
+                            : billingPeriod === 'sixmonth'
+                            ? plan.sixMonthPrice || plan.monthlyPrice * 6
+                            : plan.annualPrice || plan.monthlyPrice * 12
+                          navigate(`/plan-details/${plan.name.toLowerCase()}?period=${billingPeriod}&savings=${calculateSavingsAmount(plan)}&price=${price}`)
+                        }}
                         endIcon={<ArrowRight />}
                         sx={{
                           backgroundColor: plan.highlighted ? '#0066cc' : 'transparent',
@@ -408,147 +510,76 @@ function Pricing() {
                       </Button>
                     </Box>
 
-                    {/* Features List - Side by Side */}
+                    {/* Features List - Monthly Only */}
                     <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 0 }}>
-                      <Grid container spacing={0}>
-                        {/* Monthly Column Header */}
-                        <Grid item xs={6} sx={{ borderRight: '1px solid #e0e7ff', pb: 2, mb: 2 }}>
-                          <Typography sx={{ fontSize: '0.7rem', color: '#5a6b7d', fontWeight: 700, textAlign: 'center' }}>
-                            MONTHLY
-                          </Typography>
-                        </Grid>
-                        {/* 6-Month/Annual Column Header */}
-                        <Grid item xs={6} sx={{ pl: 2, pb: 2, mb: 2 }}>
-                          <Typography sx={{ fontSize: '0.7rem', color: '#5a6b7d', fontWeight: 700, textAlign: 'center' }}>
-                            {plan.annualPrice ? 'ANNUALLY' : '6 MONTHS'}
-                          </Typography>
-                        </Grid>
-
-                        {/* Features Rows */}
-                        {featureKeys.map((key, feaIdx) => {
-                          const monthlyVal = plan.features[key].monthly;
-                          const periodVal = plan.features[key].period;
-                          return (
-                            <React.Fragment key={feaIdx}>
-                              {/* Monthly Feature */}
-                              <Grid item xs={6} sx={{ borderRight: '1px solid #e0e7ff', borderBottom: '1px solid #e0e7ff', py: 1.5, pr: 2 }}>
-                                <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
-                                  {monthlyVal === true ? (
-                                    <CheckCircle
-                                      sx={{
-                                        color: '#10b981',
-                                        fontSize: '0.9rem',
-                                        flexShrink: 0,
-                                        mt: 0.15,
-                                      }}
-                                    />
-                                  ) : monthlyVal === false ? (
-                                    <Close
-                                      sx={{
-                                        color: '#d1d5db',
-                                        fontSize: '0.9rem',
-                                        flexShrink: 0,
-                                        mt: 0.15,
-                                      }}
-                                    />
-                                  ) : (
-                                    <CheckCircle
-                                      sx={{
-                                        color: '#10b981',
-                                        fontSize: '0.9rem',
-                                        flexShrink: 0,
-                                        mt: 0.15,
-                                      }}
-                                    />
-                                  )}
-                                  <Box>
-                                    <Typography
-                                      sx={{
-                                        color: '#5a6b7d',
-                                        fontSize: '0.75rem',
-                                        fontWeight: 500,
-                                        lineHeight: 1.3,
-                                      }}
-                                    >
-                                      {key}
-                                    </Typography>
-                                    {typeof monthlyVal === 'string' && (
-                                      <Typography
-                                        sx={{
-                                          color: '#1a2332',
-                                          fontSize: '0.7rem',
-                                          fontWeight: 600,
-                                          mt: 0.15,
-                                        }}
-                                      >
-                                        {monthlyVal}
-                                      </Typography>
-                                    )}
-                                  </Box>
-                                </Box>
-                              </Grid>
-
-                              {/* 6-Month/Annual Feature */}
-                              <Grid item xs={6} sx={{ borderBottom: '1px solid #e0e7ff', py: 1.5, pl: 2 }}>
-                                <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
-                                  {periodVal === true ? (
-                                    <CheckCircle
-                                      sx={{
-                                        color: '#10b981',
-                                        fontSize: '0.9rem',
-                                        flexShrink: 0,
-                                        mt: 0.15,
-                                      }}
-                                    />
-                                  ) : periodVal === false ? (
-                                    <Close
-                                      sx={{
-                                        color: '#d1d5db',
-                                        fontSize: '0.9rem',
-                                        flexShrink: 0,
-                                        mt: 0.15,
-                                      }}
-                                    />
-                                  ) : (
-                                    <CheckCircle
-                                      sx={{
-                                        color: '#10b981',
-                                        fontSize: '0.9rem',
-                                        flexShrink: 0,
-                                        mt: 0.15,
-                                      }}
-                                    />
-                                  )}
-                                  <Box>
-                                    <Typography
-                                      sx={{
-                                        color: '#5a6b7d',
-                                        fontSize: '0.75rem',
-                                        fontWeight: 500,
-                                        lineHeight: 1.3,
-                                      }}
-                                    >
-                                      {key}
-                                    </Typography>
-                                    {typeof periodVal === 'string' && (
-                                      <Typography
-                                        sx={{
-                                          color: '#1a2332',
-                                          fontSize: '0.7rem',
-                                          fontWeight: 600,
-                                          mt: 0.15,
-                                        }}
-                                      >
-                                        {periodVal}
-                                      </Typography>
-                                    )}
-                                  </Box>
-                                </Box>
-                              </Grid>
-                            </React.Fragment>
-                          )
-                        })}
-                      </Grid>
+                      {featureKeys.map((key, feaIdx) => {
+                        const monthlyVal = plan.features[key].monthly;
+                        return (
+                          <Box
+                            key={feaIdx}
+                            sx={{
+                              display: 'flex',
+                              gap: 1.5,
+                              alignItems: 'flex-start',
+                              py: 1.5,
+                              borderBottom: feaIdx !== featureKeys.length - 1 ? '1px solid #e0e7ff' : 'none',
+                            }}
+                          >
+                            {monthlyVal === true ? (
+                              <CheckCircle
+                                sx={{
+                                  color: '#10b981',
+                                  fontSize: '0.9rem',
+                                  flexShrink: 0,
+                                  mt: 0.15,
+                                }}
+                              />
+                            ) : monthlyVal === false ? (
+                              <Close
+                                sx={{
+                                  color: '#d1d5db',
+                                  fontSize: '0.9rem',
+                                  flexShrink: 0,
+                                  mt: 0.15,
+                                }}
+                              />
+                            ) : (
+                              <CheckCircle
+                                sx={{
+                                  color: '#10b981',
+                                  fontSize: '0.9rem',
+                                  flexShrink: 0,
+                                  mt: 0.15,
+                                }}
+                              />
+                            )}
+                            <Box>
+                              <Typography
+                                sx={{
+                                  color: '#5a6b7d',
+                                  fontSize: '0.8rem',
+                                  fontWeight: 500,
+                                  lineHeight: 1.3,
+                                }}
+                              >
+                                {key}
+                              </Typography>
+                              {typeof monthlyVal === 'string' && (
+                                <Typography
+                                  sx={{
+                                    color: '#1a2332',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 600,
+                                    mt: 0.15,
+                                  }}
+                                >
+                                  {monthlyVal}
+                                </Typography>
+                              )}
+                            </Box>
+                          </Box>
+                        )
+                      })}
                     </Box>
                   </CardContent>
                 </Card>
@@ -620,52 +651,39 @@ function Pricing() {
                     Features
                   </TableCell>
                   {plans.map((plan, idx) => (
-                    <React.Fragment key={idx}>
-                      {/* Monthly Column */}
-                      <TableCell
-                        align="center"
-                        sx={{
-                          fontWeight: 700,
-                          color: plan.highlighted ? '#0066cc' : '#1a2332',
-                          borderBottom: '2px solid #e0e7ff',
-                          fontSize: '0.75rem',
-                          backgroundColor: plan.highlighted ? '#f0f4ff' : 'white',
-                          borderRight: '1px solid #e0e7ff',
-                          minWidth: '90px',
-                        }}
-                      >
-                        <Box>
-                          <Typography sx={{ fontWeight: 700, fontSize: '0.8rem', mb: 0.5 }}>
-                            {plan.name}
-                          </Typography>
-                          <Typography sx={{ fontSize: '0.65rem', opacity: 0.8 }}>
-                            Monthly
-                          </Typography>
-                        </Box>
-                      </TableCell>
-
-                      {/* 6-Month/Annual Column */}
-                      <TableCell
-                        align="center"
-                        sx={{
-                          fontWeight: 700,
-                          color: plan.highlighted ? '#0066cc' : '#1a2332',
-                          borderBottom: '2px solid #e0e7ff',
-                          fontSize: '0.75rem',
-                          backgroundColor: plan.highlighted ? '#f0f4ff' : 'white',
-                          minWidth: '90px',
-                        }}
-                      >
-                        <Box>
-                          <Typography sx={{ fontWeight: 700, fontSize: '0.8rem', mb: 0.5 }}>
-                            {plan.name}
-                          </Typography>
-                          <Typography sx={{ fontSize: '0.65rem', opacity: 0.8 }}>
-                            {plan.annualPrice ? 'Annually' : '6 Months'}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                    </React.Fragment>
+                    <TableCell
+                      key={idx}
+                      align="center"
+                      sx={{
+                        fontWeight: 700,
+                        color: plan.highlighted ? '#0066cc' : '#1a2332',
+                        borderBottom: '2px solid #e0e7ff',
+                        fontSize: '0.75rem',
+                        backgroundColor: plan.highlighted ? '#f0f4ff' : 'white',
+                        minWidth: '120px',
+                      }}
+                    >
+                      <Box>
+                        <Typography sx={{ fontWeight: 700, fontSize: '0.8rem', mb: 0.5 }}>
+                          {plan.name}
+                        </Typography>
+                        <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: '#0066cc', mb: 0.3 }}>
+                          $
+                          {billingPeriod === 'monthly'
+                            ? plan.monthlyPrice
+                            : billingPeriod === 'sixmonth'
+                            ? plan.sixMonthPrice || plan.monthlyPrice * 6
+                            : plan.annualPrice || plan.monthlyPrice * 12}
+                        </Typography>
+                        <Typography sx={{ fontSize: '0.65rem', opacity: 0.8 }}>
+                          {billingPeriod === 'monthly'
+                            ? 'Monthly'
+                            : billingPeriod === 'sixmonth'
+                            ? '6 Months'
+                            : 'Yearly'}
+                        </Typography>
+                      </Box>
+                    </TableCell>
                   ))}
                 </TableRow>
               </TableHead>
@@ -691,62 +709,32 @@ function Pricing() {
                     </TableCell>
                     {plans.map((plan, colIdx) => {
                       const monthlyVal = plan.features[key].monthly;
-                      const periodVal = plan.features[key].period;
                       return (
-                        <React.Fragment key={colIdx}>
-                          {/* Monthly Feature Cell */}
-                          <TableCell
-                            align="center"
-                            sx={{
-                              borderBottom: '1px solid #e0e7ff',
-                              borderRight: '1px solid #e0e7ff',
-                              backgroundColor: plan.highlighted ? '#f0f4ff' : 'white',
-                              minWidth: '90px',
-                            }}
-                          >
-                            {monthlyVal === true ? (
-                              <CheckCircle sx={{ color: '#10b981', fontSize: '1.2rem' }} />
-                            ) : monthlyVal === false ? (
-                              <Close sx={{ color: '#d1d5db', fontSize: '1.2rem' }} />
-                            ) : (
-                              <Typography
-                                sx={{
-                                  color: '#5a6b7d',
-                                  fontSize: '0.75rem',
-                                  fontWeight: 600,
-                                }}
-                              >
-                                {monthlyVal}
-                              </Typography>
-                            )}
-                          </TableCell>
-
-                          {/* 6-Month/Annual Feature Cell */}
-                          <TableCell
-                            align="center"
-                            sx={{
-                              borderBottom: '1px solid #e0e7ff',
-                              backgroundColor: plan.highlighted ? '#f0f4ff' : 'white',
-                              minWidth: '90px',
-                            }}
-                          >
-                            {periodVal === true ? (
-                              <CheckCircle sx={{ color: '#10b981', fontSize: '1.2rem' }} />
-                            ) : periodVal === false ? (
-                              <Close sx={{ color: '#d1d5db', fontSize: '1.2rem' }} />
-                            ) : (
-                              <Typography
-                                sx={{
-                                  color: '#5a6b7d',
-                                  fontSize: '0.75rem',
-                                  fontWeight: 600,
-                                }}
-                              >
-                                {periodVal}
-                              </Typography>
-                            )}
-                          </TableCell>
-                        </React.Fragment>
+                        <TableCell
+                          key={colIdx}
+                          align="center"
+                          sx={{
+                            borderBottom: '1px solid #e0e7ff',
+                            backgroundColor: plan.highlighted ? '#f0f4ff' : 'white',
+                            minWidth: '120px',
+                          }}
+                        >
+                          {monthlyVal === true ? (
+                            <CheckCircle sx={{ color: '#10b981', fontSize: '1.2rem' }} />
+                          ) : monthlyVal === false ? (
+                            <Close sx={{ color: '#d1d5db', fontSize: '1.2rem' }} />
+                          ) : (
+                            <Typography
+                              sx={{
+                                color: '#5a6b7d',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                              }}
+                            >
+                              {monthlyVal}
+                            </Typography>
+                          )}
+                        </TableCell>
                       )
                     })}
                   </TableRow>

@@ -489,7 +489,7 @@ function PlanDetails() {
           <Typography sx={{ fontSize: '1.1rem', mb: 4, opacity: 0.95 }}>
             Start receiving qualified leads in your area today with no commitment.
           </Typography>
-          <Button
+          {/* <Button
             variant="contained"
             size="large"
             sx={{
@@ -505,7 +505,7 @@ function PlanDetails() {
             }}
           >
             Begin Your Free Trial
-          </Button>
+          </Button> */}
         </Container>
       </Box>
     </Box>

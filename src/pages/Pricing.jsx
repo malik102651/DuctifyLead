@@ -30,10 +30,17 @@ function Pricing() {
     {
       name: 'Basic',
       monthlyPrice: 299,
-      sixMonthPrice: 1600,
-      sixMonthSavings: '12%',
-      annualPrice: 2978,
-      annualSavings: '17%',
+      sixMonthPrice: 1599,
+      sixMonthSavingPrice: 195,
+      sixMonthSavings: '10%',
+      annualPrice: 2999,
+      annualSavingPrice: 589,
+      annualSavings: '15%',
+      paymentUrls: {
+        monthly: 'https://collectcheckout.com/r/5ikgwckm3gcxnp5ag5pi08d3re050u',
+        sixmonth: 'https://collectcheckout.com/r/qk5vg7poxe8wkd3bpu8g3wfoxqb5e7',
+        annual: 'https://collectcheckout.com/r/w0nwn8mjvgse1vlby5uupzalp9wp9q',
+      },
       features: {
         'No. of Leads': { monthly: '2-3', period: '12-15' },
         'Referral Fee': { monthly: '25%', period: '25%' },
@@ -52,10 +59,17 @@ function Pricing() {
     {
       name: 'Standard',
       monthlyPrice: 499,
-      sixMonthPrice: 2600,
-      sixMonthSavings: '14%',
-      annualPrice: 4970,
-      annualSavings: '17%',
+      sixMonthPrice: 2699,
+      sixMonthSavingPrice: 295,
+      sixMonthSavings: '10%',
+      annualPrice: 4999,
+      annualSavingPrice: 989,
+      annualSavings: '15%',
+      paymentUrls: {
+        monthly: 'https://collectcheckout.com/r/q2jad1cmw92a0dvh6nxmhwm06pm2al',
+        sixmonth: 'https://collectcheckout.com/r/x2gblwav0pnpkq55fh568fdj5oa30d',
+        annual: 'https://collectcheckout.com/r/iyl7hh6s7teyorwglq0xfy318hk8hd',
+      },
       features: {
         'No. of Leads': { monthly: '3-5', period: '18-30' },
         'Referral Fee': { monthly: '20%', period: '20%' },
@@ -74,10 +88,17 @@ function Pricing() {
     {
       name: 'Premium',
       monthlyPrice: 899,
-      sixMonthPrice: 4747,
-      sixMonthSavings: '12%',
-      annualPrice: 7470,
-      annualSavings: '17%',
+      sixMonthPrice: 4899,
+      sixMonthSavingPrice: 495,
+      sixMonthSavings: '10%',
+      annualPrice: 8999,
+      annualSavingPrice: 1789,
+      annualSavings: '15%',
+      paymentUrls: {
+        monthly: 'https://collectcheckout.com/r/kdt8ra7dydj0rlbtxti2t191hp1l3q',
+        sixmonth: 'https://collectcheckout.com/r/uoah7yzvhiif6kzpu0ek23rufjumpo',
+        annual: 'https://collectcheckout.com/r/l5yy7d051c51engg8nhqndsdpkk8ri',
+      },
       features: {
         'No. of Leads': { monthly: '5-8', period: '60-90' },
         'Referral Fee': { monthly: '15%', period: '15%' },
@@ -99,12 +120,12 @@ function Pricing() {
     'No. of Leads',
     'Referral Fee',
     'AI Verified',
-    'ISA Verified',
     'Service Area Targeting',
     'Online Marketing',
     'Customer Support',
-    'Live Transfer',
+    'ISA Verified',
     'Agent Profile',
+    'Live Transfer',
     'CRM',
   ]
 
@@ -333,7 +354,7 @@ function Pricing() {
               >
                 6 Months
                 <Chip
-                  label="Save 12%"
+                  label="Save 10%"
                   size="small"
                   sx={{
                     ml: 1.5,
@@ -365,7 +386,7 @@ function Pricing() {
               >
                 Yearly
                 <Chip
-                  label="Save 17%"
+                  label="Save 15%"
                   size="small"
                   sx={{
                     ml: 1.5,
@@ -456,6 +477,36 @@ function Pricing() {
                             ? '6-Month Price'
                             : 'Yearly Price'}
                         </Typography>
+                        {billingPeriod === 'sixmonth' && (
+                          <Box sx={{ mb: 1 }}>
+                            <Typography
+                              sx={{
+                                fontSize: '0.8rem',
+                                color: '#8b92a0',
+                                fontWeight: 600,
+                                textDecoration: 'line-through',
+                                mt: 0.5,
+                              }}
+                            >
+                              ${plan.sixMonthPrice + plan.sixMonthSavingPrice}
+                            </Typography>
+                          </Box>
+                        )}
+                        {billingPeriod === 'annual' && (
+                          <Box sx={{ mb: 1 }}>
+                            <Typography
+                              sx={{
+                                fontSize: '0.8rem',
+                                color: '#8b92a0',
+                                fontWeight: 600,
+                                textDecoration: 'line-through',
+                                mt: 0.5,
+                              }}
+                            >
+                              ${plan.annualPrice + plan.annualSavingPrice}
+                            </Typography>
+                          </Box>
+                        )}
                         <Typography
                           sx={{
                             fontSize: '1.5rem',
@@ -471,9 +522,14 @@ function Pricing() {
                             ? plan.sixMonthPrice || plan.monthlyPrice * 6
                             : plan.annualPrice || plan.monthlyPrice * 12}
                         </Typography>
-                        {calculateSavingsAmount(plan) > 0 && (
+                        {billingPeriod === 'sixmonth' && plan.sixMonthSavingPrice > 0 && (
                           <Typography sx={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 700, mt: 0.5 }}>
-                            Save ${calculateSavingsAmount(plan)}
+                            Save ${plan.sixMonthSavingPrice}
+                          </Typography>
+                        )}
+                        {billingPeriod === 'annual' && plan.annualSavingPrice > 0 && (
+                          <Typography sx={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 700, mt: 0.5 }}>
+                            Save ${plan.annualSavingPrice}
                           </Typography>
                         )}
                       </Box>
@@ -490,7 +546,8 @@ function Pricing() {
                             : billingPeriod === 'sixmonth'
                             ? plan.sixMonthPrice || plan.monthlyPrice * 6
                             : plan.annualPrice || plan.monthlyPrice * 12
-                          navigate(`/plan-details/${plan.name.toLowerCase()}?period=${billingPeriod}&savings=${calculateSavingsAmount(plan)}&price=${price}`)
+                          const paymentUrl = plan.paymentUrls[billingPeriod] || plan.paymentUrls.monthly
+                          navigate(`/plan-details/${plan.name.toLowerCase()}?period=${billingPeriod}&savings=${calculateSavingsAmount(plan)}&price=${price}&paymentUrl=${encodeURIComponent(paymentUrl)}`)
                         }}
                         endIcon={<ArrowRight />}
                         sx={{
@@ -667,6 +724,16 @@ function Pricing() {
                         <Typography sx={{ fontWeight: 700, fontSize: '0.8rem', mb: 0.5 }}>
                           {plan.name}
                         </Typography>
+                        {billingPeriod === 'sixmonth' && plan.sixMonthSavingPrice > 0 && (
+                          <Typography sx={{ fontSize: '0.65rem', color: '#8b92a0', textDecoration: 'line-through', mb: 0.3 }}>
+                            ${plan.sixMonthPrice + plan.sixMonthSavingPrice}
+                          </Typography>
+                        )}
+                        {billingPeriod === 'annual' && plan.annualSavingPrice > 0 && (
+                          <Typography sx={{ fontSize: '0.65rem', color: '#8b92a0', textDecoration: 'line-through', mb: 0.3 }}>
+                            ${plan.annualPrice + plan.annualSavingPrice}
+                          </Typography>
+                        )}
                         <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: '#0066cc', mb: 0.3 }}>
                           $
                           {billingPeriod === 'monthly'
@@ -675,7 +742,17 @@ function Pricing() {
                             ? plan.sixMonthPrice || plan.monthlyPrice * 6
                             : plan.annualPrice || plan.monthlyPrice * 12}
                         </Typography>
-                        <Typography sx={{ fontSize: '0.65rem', opacity: 0.8 }}>
+                        {billingPeriod === 'sixmonth' && plan.sixMonthSavingPrice > 0 && (
+                          <Typography sx={{ fontSize: '0.6rem', color: '#10b981', fontWeight: 700 }}>
+                            Save ${plan.sixMonthSavingPrice}
+                          </Typography>
+                        )}
+                        {billingPeriod === 'annual' && plan.annualSavingPrice > 0 && (
+                          <Typography sx={{ fontSize: '0.6rem', color: '#10b981', fontWeight: 700 }}>
+                            Save ${plan.annualSavingPrice}
+                          </Typography>
+                        )}
+                        <Typography sx={{ fontSize: '0.65rem', opacity: 0.8, mt: 0.3 }}>
                           {billingPeriod === 'monthly'
                             ? 'Monthly'
                             : billingPeriod === 'sixmonth'

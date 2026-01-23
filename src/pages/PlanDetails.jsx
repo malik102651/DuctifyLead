@@ -22,6 +22,7 @@ function PlanDetails() {
   const [billingPeriod, setBillingPeriod] = useState(searchParams.get('period') || 'monthly')
   const savingsAmount = parseInt(searchParams.get('savings')) || 0
   const selectedPrice = parseInt(searchParams.get('price')) || 0
+  const paymentUrl = decodeURIComponent(searchParams.get('paymentUrl') || '')
 
   const plansData = {
     basic: {
@@ -224,6 +225,11 @@ function PlanDetails() {
                   <Button
                     variant="contained"
                     fullWidth
+                    onClick={() => {
+                      if (paymentUrl) {
+                        window.location.href = paymentUrl
+                      }
+                    }}
                     sx={{
                       backgroundColor: '#0066cc',
                       py: 2,

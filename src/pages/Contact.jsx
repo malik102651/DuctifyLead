@@ -12,8 +12,13 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material'
-import { Phone, Mail, LocationOn, CheckCircle } from '@mui/icons-material'
+import { Phone, Mail, LocationOn, CheckCircle  } from '@mui/icons-material'
+import Calendar from '@mui/icons-material/CalendarMonth';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -25,10 +30,40 @@ function Contact() {
     message: '',
   })
 
+  const [openModal, setOpenModal] = useState(false)
+  const [scheduleFormData, setScheduleFormData] = useState({
+    name: '',
+    contact: '',
+    email: '',
+    callScheduleTime: '',
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+    })
+  }
+
+  const handleScheduleChange = (e) => {
+    setScheduleFormData({
+      ...scheduleFormData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  const handleOpenModal = () => {
+    setOpenModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false)
+    setScheduleFormData({
+      name: '',
+      contact: '',
+      email: '',
+      callScheduleTime: '',
     })
   }
 
@@ -44,6 +79,42 @@ function Contact() {
       location: '',
       message: '',
     })
+  }
+
+  const handleScheduleSubmit = async (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    try {
+      // Replace with your Google Apps Script Web App URL
+      const GOOGLE_SHEET_URL = 'https://script.google.com/macros/d/YOUR_SCRIPT_ID/usercallback'
+
+      const response = await fetch(GOOGLE_SHEET_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: scheduleFormData.name,
+          contact: scheduleFormData.contact,
+          email: scheduleFormData.email,
+          callScheduleTime: scheduleFormData.callScheduleTime,
+          timestamp: new Date().toLocaleString(),
+        }),
+      })
+
+      if (response.ok) {
+        alert('Thank you! Your call has been scheduled. We will contact you shortly.')
+        handleCloseModal()
+      } else {
+        alert('There was an error submitting your request. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      alert('Error submitting form. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -72,10 +143,30 @@ function Contact() {
             sx={{
               fontSize: '1.2rem',
               fontWeight: 400,
+              mb: 4,
             }}
           >
             Have questions? Our team is here to help you grow your duct cleaning business.
           </Typography>
+          <Button
+            onClick={handleOpenModal}
+            variant="contained"
+            size="large"
+            startIcon={<Calendar />}
+            sx={{
+              backgroundColor: '#ff6b35',
+              px: 5,
+              py: 2,
+              fontSize: '1.1rem',
+              fontWeight: 700,
+              borderRadius: 2,
+              '&:hover': {
+                backgroundColor: '#ff5522',
+              },
+            }}
+          >
+            Schedule a Call With Expert
+          </Button>
         </Container>
       </Box>
 
@@ -383,7 +474,7 @@ function Contact() {
       </Box>
 
       {/* CTA */}
-      <Box
+      {/* <Box
         sx={{
           py: { xs: 8, md: 10 },
           background: 'linear-gradient(135deg, #0066cc 0%, #003d99 100%)',
@@ -423,7 +514,154 @@ function Contact() {
             Start Your Free Trial
           </Button>
         </Container>
-      </Box>
+      </Box> */}
+
+      {/* Schedule Call Modal */}
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            background: 'linear-gradient(135deg, #0066cc 0%, #003d99 100%)',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: '1.5rem',
+          }}
+        >
+          Schedule Your Expert Call
+        </DialogTitle>
+        <DialogContent sx={{ pt: 4 }}>
+          <form onSubmit={handleScheduleSubmit}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  name="name"
+                  value={scheduleFormData.name}
+                  onChange={handleScheduleChange}
+                  required
+                  variant="outlined"
+                  sx={{
+                    marginTop: 4,
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      '&:hover fieldset': {
+                        borderColor: '#0066cc',
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Contact (Phone)"
+                  name="contact"
+                  value={scheduleFormData.contact}
+                  onChange={handleScheduleChange}
+                  required
+                  variant="outlined"
+                  placeholder="Enter your phone number"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      '&:hover fieldset': {
+                        borderColor: '#0066cc',
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={scheduleFormData.email}
+                  onChange={handleScheduleChange}
+                  required
+                  variant="outlined"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      '&:hover fieldset': {
+                        borderColor: '#0066cc',
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Call Schedule Time"
+                  name="callScheduleTime"
+                  type="datetime-local"
+                  value={scheduleFormData.callScheduleTime}
+                  onChange={handleScheduleChange}
+                  required
+                  variant="outlined"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      '&:hover fieldset': {
+                        borderColor: '#0066cc',
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </form>
+        </DialogContent>
+        <DialogActions sx={{ p: 3, gap: 2 }}>
+          <Button
+            onClick={handleCloseModal}
+            variant="outlined"
+            sx={{
+              borderColor: '#0066cc',
+              color: '#0066cc',
+              borderRadius: 2,
+              '&:hover': {
+                borderColor: '#004499',
+                backgroundColor: 'rgba(0, 102, 204, 0.05)',
+              },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleScheduleSubmit}
+            variant="contained"
+            disabled={isSubmitting}
+            sx={{
+              backgroundColor: '#0066cc',
+              borderRadius: 2,
+              '&:hover': {
+                backgroundColor: '#004499',
+              },
+            }}
+          >
+            {isSubmitting ? 'Scheduling...' : 'Schedule Call'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

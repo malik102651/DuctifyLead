@@ -16,6 +16,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
+  Alert,
 } from '@mui/material'
 import { Phone, Mail, LocationOn, CheckCircle  } from '@mui/icons-material'
 import Calendar from '@mui/icons-material/CalendarMonth';
@@ -38,6 +40,11 @@ function Contact() {
     callScheduleTime: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success', // 'success', 'error', 'info', 'warning'
+  })
 
   const handleChange = (e) => {
     setFormData({
@@ -67,10 +74,25 @@ function Contact() {
     })
   }
 
+  const showSnackbar = (message, severity = 'success') => {
+    setSnackbar({
+      open: true,
+      message,
+      severity,
+    })
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({
+      ...snackbar,
+      open: false,
+    })
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log('Form submitted:', formData)
-    alert('Thank you! We\'ll be in touch soon.')
+    showSnackbar('Thank you! We\'ll be in touch soon.')
     setFormData({
       name: '',
       email: '',
@@ -87,7 +109,7 @@ function Contact() {
 
     try {
       // Replace with your Google Apps Script Web App URL
-      const GOOGLE_SHEET_URL = 'https://script.google.com/macros/d/YOUR_SCRIPT_ID/usercallback'
+      const GOOGLE_SHEET_URL = 'https://sheetdb.io/api/v1/zo7qs07wnrh8w'
 
       const response = await fetch(GOOGLE_SHEET_URL, {
         method: 'POST',
@@ -95,23 +117,23 @@ function Contact() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: scheduleFormData.name,
-          contact: scheduleFormData.contact,
-          email: scheduleFormData.email,
-          callScheduleTime: scheduleFormData.callScheduleTime,
-          timestamp: new Date().toLocaleString(),
+          Name: scheduleFormData.name,
+          Contact: scheduleFormData.contact,
+          Email: scheduleFormData.email,
+          "Call Schedule Time": scheduleFormData.callScheduleTime,
+          // timestamp: new Date().toLocaleString(),
         }),
       })
 
       if (response.ok) {
-        alert('Thank you! Your call has been scheduled. We will contact you shortly.')
+        showSnackbar('Thank you! Your call has been scheduled. We will contact you shortly.')
         handleCloseModal()
       } else {
-        alert('There was an error submitting your request. Please try again.')
+        showSnackbar('There was an error submitting your request. Please try again.', 'error')
       }
     } catch (error) {
       console.error('Error submitting form:', error)
-      alert('Error submitting form. Please try again.')
+      showSnackbar('Error submitting form. Please try again.', 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -662,6 +684,22 @@ function Contact() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar for Notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%', borderRadius: 2 }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }
